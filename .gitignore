@@ -1,7 +1,5 @@
-.direnv
+# Nix
 result
-*.aux
-*.fdb_*
-*.fls
-*.log
-*.pdf
+
+# Direnv
+.direnv
