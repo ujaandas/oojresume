@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"io"
 	"os"
+	"path/filepath"
 )
 
 /*
@@ -43,14 +45,20 @@ type ResumeConfig struct {
 func getResumeConfig(dir, cfgFilename string) ([]ResumeConfig, error) {
 	cfg := []ResumeConfig{}
 
-	cfgFile, err := os.Open(dir + cfgFilename)
+	cfgFile, err := os.Open(filepath.Join(dir, cfgFilename))
 	if err != nil {
 		return nil, err
 	}
 	defer cfgFile.Close()
 
 	jsonParser := json.NewDecoder(cfgFile)
-	jsonParser.Decode(&cfg)
+	err = jsonParser.Decode(&cfg)
+	if err != nil {
+		if err == io.EOF {
+			return cfg, nil
+		}
+		return nil, err
+	}
 
 	return cfg, nil
 }
