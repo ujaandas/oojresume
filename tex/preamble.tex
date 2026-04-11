@@ -1,0 +1,25 @@
+\usepackage[a4paper,                % Set paper size to A4 (change to letterpaper for NA)
+top=0.5in,                          % Specify top page margin
+bottom=0.5in,                       % Specify bottom page margin
+left=0.5in,                         % Specify left page margin
+right=0.5in]{geometry}              % Specify right page margin
+        
+\usepackage{XCharter}               % Set font
+\usepackage[T1]{fontenc}            % Output encoding
+\usepackage[utf8]{inputenc}         % Input encoding
+\usepackage{enumitem}               % Enable lists for bullet points: itemize and \item
+\usepackage[hidelinks]{hyperref}    % Format hyperlinks
+\usepackage{titlesec}               % Enable section title customization
+\raggedright                        % Disable text justification
+\pagestyle{empty}                   % Disable page numbering
+
+% Ensure PDF output will be all-Unicode and machine-readable
+\input{glyphtounicode}
+\pdfgentounicode=1
+
+% Format section headings: bolding, size, white space above and below
+\titleformat{\section}{\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule\vspace{-6.5pt}]
+
+% Format bullet points: size, white space above and below, white space between bullets
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\setlist[itemize]{itemsep=-2pt, leftmargin=12pt, topsep=7pt} %%% Test various topsep values to fix vertical spacing errors
