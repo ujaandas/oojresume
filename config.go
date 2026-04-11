@@ -40,12 +40,12 @@ type ResumeConfig struct {
 	Awards     []AwardTemplName
 }
 
-func getResumeConfig(dir, cfgFilename string) (ResumeConfig, error) {
-	cfg := ResumeConfig{}
+func getResumeConfig(dir, cfgFilename string) ([]ResumeConfig, error) {
+	cfg := []ResumeConfig{}
 
 	cfgFile, err := os.Open(dir + cfgFilename)
 	if err != nil {
-		return ResumeConfig{}, err
+		return nil, err
 	}
 	defer cfgFile.Close()
 
