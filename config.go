@@ -31,7 +31,7 @@ type SkillsetTmplName string
 
 type AwardTemplName string
 
-type Config struct {
+type ResumeConfig struct {
 	Identity   Identity
 	Education  []EducationTmplName
 	Experience []ExperienceTmplName
@@ -40,12 +40,12 @@ type Config struct {
 	Awards     []AwardTemplName
 }
 
-func getConfig(dir, cfgFilename string) (Config, error) {
-	cfg := Config{}
+func getResumeConfig(dir, cfgFilename string) (ResumeConfig, error) {
+	cfg := ResumeConfig{}
 
 	cfgFile, err := os.Open(dir + cfgFilename)
 	if err != nil {
-		return Config{}, err
+		return ResumeConfig{}, err
 	}
 	defer cfgFile.Close()
 
