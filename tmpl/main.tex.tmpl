@@ -1,105 +1,20 @@
-\documentclass[11pt]{article} % Set main text size
-
+\documentclass[11pt]{article}
 \input{preamble}
-
 \begin{document}
 
-% Name
-\centerline{\Huge Ujaan Das}
-
+\centerline{\Huge {{ .Identity.Name }}}
 \vspace{5pt}
-
-% Contact details
-\centerline{\href{mailto:ujaandas03@gmail.com}{ujaandas03@gmail.com} | \href{https://www.linkedin.com/in/ujaandas/}{linkedin.com/in/ujaandas} | \href{https://github.com/ujaandas}{github.com/ujaandas}}
+\centerline{{ .Identity.ContactLine }}
 
 \vspace{-18pt}
 
-% Education section
-\section*{Education}
-\textbf{University of Warwick} -- MSc in Computer Science \hfill Sep 2026 \\
-\textbf{Hong Kong University of Science and Technology} -- BEng in Computer Engineering \hfill May 2025 \\
-\textbf{Northwestern University} -- Exchange Semester \hfill Apr 2024
-
-\vspace{-10pt}
-
-% Experience section
-\section*{Experience}
-
-\textbf{Software Engineer,} {\small Stellerus Technology} -- Hong Kong SAR \hfill Jan 2025 - Aug 2025 \\
-\vspace{-9pt}
-\begin{itemize}
-    \item Designed a JSON-based typed intermediate representation to transform LLM outputs into structured, verifiable commands, enabling the model to act as a predictable, autonomous agent
-    \item Built a validation and dispatch framework to ensure agent outputs conformed to the IR schema, enforcing argument types and command structure, improving workflow reliability by \textasciitilde40\%
-    \item Refactored the execution pipeline to standardize message formats and remove redundant parsing, supporting safe multi-step agent workflows and reducing runtime errors by \textasciitilde35\%
-\end{itemize}
-
-\vspace{-5pt}
-
-\textbf{Software Engineering Intern,} {\small CASTLE Lab, HKUST} -- Hong Kong SAR \hfill May 2024 -- Sept 2024 \\
-\vspace{-9pt}
-\begin{itemize}
-    \item Tasked with extracting semantic signals (assertions, control-flow, context) from noisy, multi-million-line Java codebases (30,000+ repositories) to support research on automated correctness checking
-    \item Engineered static-analysis pipelines that lowered code into ASTs, control-flow graphs, and lightweight IRs, and built high-throughput AST/data-flow tooling in Python to process large repository batches
-    \item Increased usable assertion/context coverage by 3.2$\times$, reduced per-project analysis time by \textasciitilde45\%, and enabled lab to run new large-scale experiments in automated assertion generation and program-understanding models
-\end{itemize}
-
-\vspace{-5pt}
-
-\textbf{Software Development Intern,} {\small Stellerus Technology} -- Hong Kong SAR \hfill May 2023 -- Aug 2023 \\
-\vspace{-9pt}
-\begin{itemize}
-    \item Built a high‑performance geospatial serving system responsible for handling large tile workloads under tight latency and throughput constraints
-    \item Designed a GDAL processing pipeline, optimized MongoDB metadata access paths through indexing and schema redesign, and introduced a Celery/Redis worker pool to parallelize CPU‑heavy geospatial operations
-    \item Delivered sustained 8,000+ tile requests/sec with sub‑150ms latency, cut metadata query time by \textasciitilde55\%, and reduced queue wait times by \textasciitilde60\%, significantly improving backend throughput under peak load
-\end{itemize}
-
-\vspace{-18pt}
-
-% Projects section
-
-\section*{Projects}
-
-\textbf{MSc Dissertation - Formally Verified Outputs in LLMs} 
-\hfill \href{https://github.com/ujaandas/dissertation/}{Github} \\
-\vspace{-9pt}
-\begin{itemize}
-    \item Designing a DSL and verification compiler that pairs a formal specification language with a predictive model trained to approximate compiler behavior, enabling deterministically checked structured outputs from LLMs
-\end{itemize}
-
-\vspace{-5pt}
-
-\textbf{yywm} 
-\hfill \href{https://github.com/ujaandas/yywm}{Github} \\
-\vspace{-9pt}
-\begin{itemize}
-    \item Tiling window manager for macOS written in C++, using Cocoa/CoreGraphics and an i3‑style tree layout engine for dynamic, scriptable window management without needing to disable SIP
-\end{itemize}
-
-\vspace{-5pt}
-
-\textbf{Snip} 
-\hfill \href{https://github.com/ujaandas/snip}{Github} \\
-\vspace{-9pt}
-\begin{itemize}
-    \item Asynchronous C++ TUI framework, runtime, and Vim‑style modal editor with an optimized rendering pipeline, integrated LSP tooling, and reproducible Nix‑based development environments
-\end{itemize}
-
-\vspace{-5pt}
-
-\textbf{Undergraduate Final Year Project - Follow‑Me Robot} 
-\hfill \href{https://github.com/KnyghtEkkeherd/FinalYearProject}{Github} \\
-\vspace{-9pt}
-\begin{itemize}
-    \item Real‑time UWB tracking system with custom ROS2 Python/C++ nodes, implementing multi‑rate filtering (jump/Kalman/EMA) and Nav2 integration for stable sub‑cm localization under noisy sensor conditions
-\end{itemize}
-
-\vspace{-18pt}
-
-% Skills section
-\section*{Skills}
-\textbf{Languages:} Python, C++, C, Go, Typescript, Javascript, SQL, HTML, CSS \\
-\textbf{Frameworks/Libraries:} React.js, Next.js, ROS2, FastAPI \\
-\textbf{Databases:} MongoDB, PostgreSQL, MySQL, SQLite, Redis\\
-\textbf{Developer Tools:} Docker, Git, REST, Make, Nix, NGINX, Azure, AWS, Github Actions CI/CD
+{{ range .Sections }}
+    \section*{ {{ .Title }} }
+    {{ range .Entries }}
+        {{ . }}
+        \vspace{-5pt}
+    {{ end }}
+    {{ .AfterSectionSpacing }}
+{{ end }}
 
 \end{document}
