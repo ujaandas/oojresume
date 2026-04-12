@@ -85,7 +85,7 @@
             text = ''
               set -euo pipefail
 
-              target_dir="''${1:-./out/pdfs}"
+              target_dir="''${1:-./out}"
               mkdir -p "$target_dir"
 
               out_path="$(nix build .#default --print-out-paths --no-link)"
