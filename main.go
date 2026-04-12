@@ -52,7 +52,12 @@ func main() {
 			log.Fatalf("resume %d validation failed: %v", i, err)
 		}
 
-		rendered, err := renderResume(tmpl, "main.tex.tmpl", r)
+		processed, err := processEntries(tmpl, r)
+		if err != nil {
+			log.Fatalf("resume %d entry render failed: %v", i, err)
+		}
+
+		rendered, err := renderResume(tmpl, "main.tex.tmpl", processed)
 		if err != nil {
 			log.Fatalf("resume %d render failed: %v", i, err)
 		}

@@ -62,6 +62,24 @@ func renderResume(tmpl *template.Template, mainTmplName string, r Resume) (strin
 	return out.String(), nil
 }
 
+func processEntries(tmpl *template.Template, r Resume) (Resume, error) {
+	processed := r
+
+	for i := range processed.Sections {
+		var rendered []string
+		for _, entry := range processed.Sections[i].Entries {
+			var buf bytes.Buffer
+			if err := tmpl.ExecuteTemplate(&buf, entry, nil); err != nil {
+				return Resume{}, fmt.Errorf("failed to render %q: %v", entry, err)
+			}
+			rendered = append(rendered, buf.String())
+		}
+		processed.Sections[i].Entries = rendered
+	}
+
+	return processed, nil
+}
+
 func validateResume(tmpl *template.Template, mainTmplName string, r Resume) error {
 	if tmpl.Lookup(mainTmplName) == nil {
 		return fmt.Errorf("main template %q not found", mainTmplName)
