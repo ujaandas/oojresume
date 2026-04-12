@@ -80,7 +80,7 @@ func TestRenderResume(t *testing.T) {
 func TestValidateResume_Valid(t *testing.T) {
 	dir := t.TempDir()
 	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "test")
-	mustWriteFile(t, filepath.Join(dir, "edu_warwick.tex.tmpl"), "edu")
+	mustWriteFile(t, filepath.Join(dir, "edu_warwick.tex.tmpl"), `{{ define "edu_warwick" }}education{{ end }}`)
 
 	tmpl, err := parseLatexTemplates(dir)
 	if err != nil {
@@ -129,12 +129,55 @@ func TestValidateResume_MissingEntry(t *testing.T) {
 		Sections: []Section{
 			{
 				Title:   "Education",
-				Entries: []string{"missing_edu.tex.tmpl"},
+				Entries: []string{"missing_edu"},
 			},
 		},
 	})
 	if err == nil {
 		t.Fatal("validateResume() expected error for missing entry template")
+	}
+}
+
+func TestProcessEntries(t *testing.T) {
+	dir := t.TempDir()
+	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "main")
+	mustWriteFile(t, filepath.Join(dir, "edu_test.tex.tmpl"), `{{ define "edu_test" }}CONTENT_EDU{{ end }}`)
+	mustWriteFile(t, filepath.Join(dir, "work_test.tex.tmpl"), `{{ define "work_test" }}CONTENT_WORK{{ end }}`)
+
+	tmpl, err := parseLatexTemplates(dir)
+	if err != nil {
+		t.Fatalf("parseLatexTemplates() error = %v", err)
+	}
+
+	input := Resume{
+		Identity: Identity{Name: "Test User"},
+		Sections: []Section{
+			{
+				Title:   "Education",
+				Entries: []string{"edu_test", "work_test"},
+			},
+		},
+	}
+
+	processed, err := processEntries(tmpl, input)
+	if err != nil {
+		t.Fatalf("processEntries() error = %v", err)
+	}
+
+	if len(processed.Sections) != 1 {
+		t.Fatalf("expected 1 section, got %d", len(processed.Sections))
+	}
+
+	if len(processed.Sections[0].Entries) != 2 {
+		t.Fatalf("expected 2 entries, got %d", len(processed.Sections[0].Entries))
+	}
+
+	if processed.Sections[0].Entries[0] != "CONTENT_EDU" {
+		t.Fatalf("expected CONTENT_EDU, got %q", processed.Sections[0].Entries[0])
+	}
+
+	if processed.Sections[0].Entries[1] != "CONTENT_WORK" {
+		t.Fatalf("expected CONTENT_WORK, got %q", processed.Sections[0].Entries[1])
 	}
 }
 
