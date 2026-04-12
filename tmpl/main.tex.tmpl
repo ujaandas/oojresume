@@ -4,7 +4,11 @@
 
 \centerline{\Huge {{ .Identity.Name }}}
 \vspace{5pt}
-\centerline{{ .Identity.ContactLine }}
+\centerline{
+    \href{mailto:{{ .Identity.Email }}}{ {{ .Identity.Email }} } |
+    \href{https://www.{{ .Identity.LinkedIn }}}{ {{ .Identity.LinkedIn }} } |
+    \href{https://{{ .Identity.Github }}}{ {{ .Identity.Github } }}
+}
 
 \vspace{-18pt}
 
