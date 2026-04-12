@@ -37,47 +37,34 @@
             ];
           }).config.oojresume.package;
 
-        defaultResume = mkResumeFromOptions {
-          enable = true;
-          name = "default";
-          identity = {
-            name = "Ujaan Das";
-            email = "ujaandas03@gmail.com";
-            linkedin = "linkedin.com/in/ujaandas";
-            github = "github.com/ujaandas";
-          };
-          sections = [
-            {
-              title = "Education";
-              entries = [
-                "edu_warwick"
-                "edu_hkust"
-              ];
-              entryVSpace = 0;
-            }
-            {
-              title = "Experience";
-              entries = [
-                "work_stellerus_swe_2025"
-                "work_hkust_castle_2024"
-                "work_stellerus_sde_2023"
-              ];
-            }
-            {
-              title = "Projects";
-              entries = [
-                "proj_dissertation"
-                "proj_yywm"
-                "proj_snip"
-                "proj_follow_me_robot"
-              ];
-            }
-            {
-              title = "Skills";
-              entries = [ "skills_default" ];
-            }
-          ];
-        };
+        resumeOptionFiles =
+          let
+            entries = builtins.readDir ./resumes;
+            names = builtins.attrNames entries;
+            nixFiles = builtins.filter (n: entries.${n} == "regular" && pkgs.lib.hasSuffix ".nix" n) names;
+          in
+          builtins.listToAttrs (
+            map (n: {
+              name = pkgs.lib.removeSuffix ".nix" n;
+              value = ./resumes + "/${n}";
+            }) nixFiles
+          );
+
+        resumeOptions = builtins.mapAttrs (_: path: import path) resumeOptionFiles;
+
+        resumePackages = builtins.mapAttrs (
+          variantName: opts: mkResumeFromOptions (opts // { name = opts.name or variantName; })
+        ) resumeOptions;
+
+        defaultResume =
+          if resumePackages ? default then
+            resumePackages.default
+          else
+            builtins.head (builtins.attrValues resumePackages);
+
+        resumePackageNames = builtins.attrNames resumePackages;
+
+        packageSelectors = pkgs.lib.concatStringsSep " " (map (name: ".#${name}") resumePackageNames);
 
         resumegenApp = "${
           (pkgs.writeShellApplication {
@@ -88,8 +75,10 @@
               target_dir="''${1:-./out}"
               mkdir -p "$target_dir"
 
-              out_path="$(nix build .#default --print-out-paths --no-link)"
-              cp -f "$out_path"/*.pdf "$target_dir"/
+              mapfile -t out_paths < <(nix build ${packageSelectors} --print-out-paths --no-link)
+              for out_path in "''${out_paths[@]}"; do
+                cp -f "$out_path"/*.pdf "$target_dir"/
+              done
 
               echo "Copied PDFs to $target_dir"
             '';
@@ -105,7 +94,8 @@
           inherit resumegen;
 
           default = defaultResume;
-        };
+        }
+        // resumePackages;
 
         apps = {
           resumegen = {
