@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/fs"
 	"path/filepath"
@@ -48,4 +49,15 @@ func parseLatexTemplates(dir string) (*template.Template, error) {
 	}
 
 	return tmpl, nil
+}
+
+func renderResume(tmpl *template.Template, r Resume) (string, error) {
+	var out bytes.Buffer
+
+	err := tmpl.ExecuteTemplate(&out, "main.tex.tmpl", r)
+	if err != nil {
+		return "", err
+	}
+
+	return out.String(), nil
 }

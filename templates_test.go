@@ -50,6 +50,28 @@ func TestParseLatexTemplates_NoTemplates(t *testing.T) {
 	}
 }
 
+func TestRenderResume(t *testing.T) {
+	dir := t.TempDir()
+	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "Name={{ .Identity.Name }} Skills={{ .Skills }}")
+
+	tmpl, err := parseLatexTemplates(dir)
+	if err != nil {
+		t.Fatalf("parseLatexTemplates() error = %v", err)
+	}
+
+	rendered, err := renderResume(tmpl, Resume{
+		Identity: Identity{Name: "Ujaan Das"},
+		Skills:   SkillsetTmplName("skills_default"),
+	})
+	if err != nil {
+		t.Fatalf("renderResume() error = %v", err)
+	}
+
+	if rendered != "Name=Ujaan Das Skills=skills_default" {
+		t.Fatalf("unexpected render output: %q", rendered)
+	}
+}
+
 func mustWriteFile(t *testing.T, path, content string) {
 	t.Helper()
 
