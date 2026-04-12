@@ -181,6 +181,41 @@ func TestProcessEntries(t *testing.T) {
 	}
 }
 
+func TestProcessEntries_FormatsNumericVSpace(t *testing.T) {
+	dir := t.TempDir()
+	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "main")
+	mustWriteFile(t, filepath.Join(dir, "edu_test.tex.tmpl"), `{{ define "edu_test" }}CONTENT_EDU{{ end }}`)
+
+	tmpl, err := parseLatexTemplates(dir)
+	if err != nil {
+		t.Fatalf("parseLatexTemplates() error = %v", err)
+	}
+
+	entrySpace := -2
+	sectionSpace := -7
+
+	processed, err := processEntries(tmpl, Resume{
+		Sections: []Section{
+			{
+				Title:         "Education",
+				Entries:       []string{"edu_test"},
+				EntryVSpace:   &entrySpace,
+				SectionVSpace: &sectionSpace,
+			},
+		},
+	})
+	if err != nil {
+		t.Fatalf("processEntries() error = %v", err)
+	}
+
+	if processed.Sections[0].EntryVSpaceTex != "\\vspace{-2pt}" {
+		t.Fatalf("expected entry spacing to be formatted, got %q", processed.Sections[0].EntryVSpaceTex)
+	}
+	if processed.Sections[0].SectionVSpaceTex != "\\vspace{-7pt}" {
+		t.Fatalf("expected section spacing to be formatted, got %q", processed.Sections[0].SectionVSpaceTex)
+	}
+}
+
 func mustWriteFile(t *testing.T, path, content string) {
 	t.Helper()
 

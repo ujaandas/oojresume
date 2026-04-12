@@ -62,10 +62,21 @@ func renderResume(tmpl *template.Template, mainTmplName string, r Resume) (strin
 	return out.String(), nil
 }
 
+func formatVSpace(v *int, fallback int) string {
+	value := fallback
+	if v != nil {
+		value = *v
+	}
+	return fmt.Sprintf("\\vspace{%dpt}", value)
+}
+
 func processEntries(tmpl *template.Template, r Resume) (Resume, error) {
 	processed := r
 
 	for i := range processed.Sections {
+		processed.Sections[i].EntryVSpaceTex = formatVSpace(processed.Sections[i].EntryVSpace, -5)
+		processed.Sections[i].SectionVSpaceTex = formatVSpace(processed.Sections[i].SectionVSpace, -10)
+
 		var rendered []string
 		for _, entry := range processed.Sections[i].Entries {
 			var buf bytes.Buffer

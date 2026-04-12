@@ -13,12 +13,13 @@
 \vspace{-18pt}
 
 {{ range .Sections }}
+    {{ $section := . }}
     \section*{ {{ .Title }} }
     {{ range .Entries }}
         {{ . }}
-        \vspace{-5pt}
+        {{ $section.EntryVSpaceTex }}
     {{ end }}
-    \vspace{-18pt}
+    {{ .SectionVSpaceTex }}
 {{ end }}
 
 \end{document}

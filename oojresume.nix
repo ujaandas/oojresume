@@ -8,6 +8,7 @@ let
     mkEnableOption
     mkIf
     mkOption
+    optionalAttrs
     types
     ;
 
@@ -23,10 +24,19 @@ let
           github = cfg.identity.github;
           website = cfg.identity.website;
         };
-        sections = map (s: {
-          title = s.title;
-          entries = s.entries;
-        }) cfg.sections;
+        sections = map (
+          s:
+          {
+            title = s.title;
+            entries = s.entries;
+          }
+          // optionalAttrs (s.entryVSpace != null) {
+            entryVSpace = s.entryVSpace;
+          }
+          // optionalAttrs (s.sectionVSpace != null) {
+            sectionVSpace = s.sectionVSpace;
+          }
+        ) cfg.sections;
       }
     ];
 
@@ -158,6 +168,16 @@ let
                   type = types.listOf types.str;
                   default = [ ];
                   description = "Template names for this section.";
+                };
+                entryVSpace = mkOption {
+                  type = types.nullOr types.int;
+                  default = null;
+                  description = "Optional spacing in pt inserted after each entry, e.g. -4.";
+                };
+                sectionVSpace = mkOption {
+                  type = types.nullOr types.int;
+                  default = null;
+                  description = "Optional spacing in pt inserted after the section, e.g. -8.";
                 };
               };
             }

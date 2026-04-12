@@ -30,8 +30,12 @@ type SkillsetTmplName string
 type AwardTmplName string
 
 type Section struct {
-	Title   string
-	Entries []string
+	Title            string
+	Entries          []string
+	EntryVSpace      *int
+	SectionVSpace    *int
+	EntryVSpaceTex   string
+	SectionVSpaceTex string
 }
 
 type Resume struct {
