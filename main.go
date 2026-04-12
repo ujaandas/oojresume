@@ -2,21 +2,31 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"log"
 )
 
 type Config struct {
-	dir string
+	cfgPath  string
+	tmplPath string
 }
 
 func loadAppCfg() Config {
 	var cfg Config
-	flag.StringVar(&cfg.dir, "dir", ".", "set directory to look for config file in")
+
+	flag.StringVar(&cfg.cfgPath, "dir", ".", "set path to look for config file in")
+	flag.StringVar(&cfg.tmplPath, "tmpl", "tmpl", "set path to look for template files in")
+
 	flag.Parse()
 	return cfg
 }
 
 func main() {
 	cfg := loadAppCfg()
-	fmt.Println("config dir:", cfg.dir)
+
+	tmpl, err := parseLatexTemplates(cfg.tmplPath)
+	if err != nil {
+		log.Fatalf("failed to parse templates in %s: %s", cfg.tmplPath, err)
+	}
+
+	log.Printf("loaded %d templates", len(tmpl.Templates()))
 }
