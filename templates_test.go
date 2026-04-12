@@ -52,22 +52,27 @@ func TestParseLatexTemplates_NoTemplates(t *testing.T) {
 
 func TestRenderResume(t *testing.T) {
 	dir := t.TempDir()
-	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "Name={{ .Identity.Name }} Skills={{ .Skills }}")
+	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "Name={{ .Identity.Name }} Sections={{ len .Sections }}")
 
 	tmpl, err := parseLatexTemplates(dir)
 	if err != nil {
 		t.Fatalf("parseLatexTemplates() error = %v", err)
 	}
 
-	rendered, err := renderResume(tmpl, Resume{
+	rendered, err := renderResume(tmpl, "main.tex.tmpl", Resume{
 		Identity: Identity{Name: "Ujaan Das"},
-		Skills:   SkillsetTmplName("skills_default"),
+		Sections: []Section{
+			{
+				Title:   "Education",
+				Entries: []string{"edu_warwick", "edu_hkust"},
+			},
+		},
 	})
 	if err != nil {
 		t.Fatalf("renderResume() error = %v", err)
 	}
 
-	if rendered != "Name=Ujaan Das Skills=skills_default" {
+	if rendered != "Name=Ujaan Das Sections=1" {
 		t.Fatalf("unexpected render output: %q", rendered)
 	}
 }

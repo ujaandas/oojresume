@@ -24,22 +24,19 @@ type Identity struct {
 }
 
 type EducationTmplName string
-
 type ExperienceTmplName string
-
 type ProjectTmplName string
-
 type SkillsetTmplName string
+type AwardTmplName string
 
-type AwardTemplName string
+type Section struct {
+	Title   string
+	Entries []string
+}
 
 type Resume struct {
-	Identity   Identity
-	Education  []EducationTmplName
-	Experience []ExperienceTmplName
-	Project    []ProjectTmplName
-	Skills     SkillsetTmplName
-	Awards     []AwardTemplName
+	Identity Identity
+	Sections []Section
 }
 
 func getResumeConfig(dir, cfgFilename string) ([]Resume, error) {

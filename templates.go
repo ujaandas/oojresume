@@ -51,10 +51,10 @@ func parseLatexTemplates(dir string) (*template.Template, error) {
 	return tmpl, nil
 }
 
-func renderResume(tmpl *template.Template, r Resume) (string, error) {
+func renderResume(tmpl *template.Template, mainTmplName string, r Resume) (string, error) {
 	var out bytes.Buffer
 
-	err := tmpl.ExecuteTemplate(&out, "main.tex.tmpl", r)
+	err := tmpl.ExecuteTemplate(&out, mainTmplName, r)
 	if err != nil {
 		return "", err
 	}
