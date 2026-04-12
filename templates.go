@@ -61,3 +61,29 @@ func renderResume(tmpl *template.Template, mainTmplName string, r Resume) (strin
 
 	return out.String(), nil
 }
+
+func validateResume(tmpl *template.Template, mainTmplName string, r Resume) error {
+	if tmpl.Lookup(mainTmplName) == nil {
+		return fmt.Errorf("main template %q not found", mainTmplName)
+	}
+
+	var missing []string
+	tmplNames := make(map[string]bool)
+	for _, t := range tmpl.Templates() {
+		tmplNames[t.Name()] = true
+	}
+
+	for _, section := range r.Sections {
+		for _, entry := range section.Entries {
+			if !tmplNames[entry] {
+				missing = append(missing, entry)
+			}
+		}
+	}
+
+	if len(missing) > 0 {
+		return fmt.Errorf("missing templates: %v", missing)
+	}
+
+	return nil
+}

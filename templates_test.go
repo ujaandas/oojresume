@@ -77,6 +77,67 @@ func TestRenderResume(t *testing.T) {
 	}
 }
 
+func TestValidateResume_Valid(t *testing.T) {
+	dir := t.TempDir()
+	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "test")
+	mustWriteFile(t, filepath.Join(dir, "edu_warwick.tex.tmpl"), "edu")
+
+	tmpl, err := parseLatexTemplates(dir)
+	if err != nil {
+		t.Fatalf("parseLatexTemplates() error = %v", err)
+	}
+
+	err = validateResume(tmpl, "main.tex.tmpl", Resume{
+		Identity: Identity{Name: "Test"},
+		Sections: []Section{
+			{
+				Title:   "Education",
+				Entries: []string{"edu_warwick.tex.tmpl"},
+			},
+		},
+	})
+	if err != nil {
+		t.Fatalf("validateResume() expected no error, got %v", err)
+	}
+}
+
+func TestValidateResume_MissingMain(t *testing.T) {
+	dir := t.TempDir()
+	mustWriteFile(t, filepath.Join(dir, "other.tex.tmpl"), "test")
+
+	tmpl, err := parseLatexTemplates(dir)
+	if err != nil {
+		t.Fatalf("parseLatexTemplates() error = %v", err)
+	}
+
+	err = validateResume(tmpl, "main.tex.tmpl", Resume{})
+	if err == nil {
+		t.Fatal("validateResume() expected error for missing main template")
+	}
+}
+
+func TestValidateResume_MissingEntry(t *testing.T) {
+	dir := t.TempDir()
+	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "test")
+
+	tmpl, err := parseLatexTemplates(dir)
+	if err != nil {
+		t.Fatalf("parseLatexTemplates() error = %v", err)
+	}
+
+	err = validateResume(tmpl, "main.tex.tmpl", Resume{
+		Sections: []Section{
+			{
+				Title:   "Education",
+				Entries: []string{"missing_edu.tex.tmpl"},
+			},
+		},
+	})
+	if err == nil {
+		t.Fatal("validateResume() expected error for missing entry template")
+	}
+}
+
 func mustWriteFile(t *testing.T, path, content string) {
 	t.Helper()
 
