@@ -4,7 +4,7 @@
 
   identity = {
     name = "Ujaan Das";
-    phone = "+44 74350 84812";
+    phone = "+44-74350-84812";
     email = "ujaandas03@gmail.com";
     linkedin = "linkedin.com/in/ujaandas";
     github = "github.com/ujaandas";
