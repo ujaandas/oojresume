@@ -23,7 +23,7 @@
       entries = [
         "work_stellerus_swe_2025"
         "work_hkust_castle_2024"
-        "work_stellerus_sde_2023"
+        "work_stellerus_swe_2023"
       ];
     }
     {
