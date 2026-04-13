@@ -1,25 +1,25 @@
-\documentclass[11pt]{article}
 \input{preamble}
+\input{commands}
 \begin{document}
 
-\centerline{\Huge {{ .Identity.Name }}}
-\vspace{5pt}
-\centerline{
-    \href{mailto:{{ .Identity.Email }}}{ {{ .Identity.Email }} } |
-    \href{https://www.{{ .Identity.LinkedIn }}}{ {{ .Identity.LinkedIn }} } |
-    \href{https://{{ .Identity.Github }}}{ {{ .Identity.Github }} }
-}
-
-\vspace{-18pt}
+%----------HEADING----------
+\begin{center}
+    \textbf{\Huge \scshape {{ .Identity.Name }}}} \\ \vspace{1pt}
+    \small {{ .Identity.Phone }} $|$ \href{mailto:{{ .Identity.Email }}}{\underline{{{ .Identity.Email }}}} $|$ 
+    \href{https://{{ .Identity.LinkedIn }}}{\underline{{{ .Identity.LinkedIn }}}} $|$
+    \href{https://{{ .Identity.Github }}}{\underline{{{ .Identity.Github }}}}
+\end{center}
 
 {{ range .Sections }}
     {{ $section := . }}
-    \section*{ {{ .Title }} }
+    \section{ {{ .Title }} }
+    \resumeSubHeadingListStart
     {{ range .Entries }}
         {{ . }}
-        {{ $section.EntryVSpaceTex }}
+        % {{ $section.EntryVSpaceTex }}
     {{ end }}
-    {{ .SectionVSpaceTex }}
+    % {{ .SectionVSpaceTex }}
+    \resumeSubHeadingListEnd
 {{ end }}
 
 \end{document}
