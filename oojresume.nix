@@ -12,6 +12,86 @@ let
     types
     ;
 
+  mkListSectionOption =
+    defaultTitle: description:
+    mkOption {
+      type = types.nullOr (
+        types.submodule {
+          options = {
+            title = mkOption {
+              type = types.str;
+              default = defaultTitle;
+              description = "${description} title.";
+            };
+            entries = mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+              description = "Template names for this section.";
+            };
+            entryVSpace = mkOption {
+              type = types.nullOr types.int;
+              default = null;
+              description = "Optional spacing in pt inserted after each entry, e.g. -4.";
+            };
+            sectionVSpace = mkOption {
+              type = types.nullOr types.int;
+              default = null;
+              description = "Optional spacing in pt inserted after the section, e.g. -8.";
+            };
+          };
+        }
+      );
+      default = null;
+      description = "Section configuration for ${description}.";
+    };
+
+  mkSkillsSectionOption = mkOption {
+    type = types.nullOr (
+      types.submodule {
+        options = {
+          title = mkOption {
+            type = types.str;
+            default = "Skills";
+            description = "Skills section title.";
+          };
+          entries = mkOption {
+            type = types.listOf types.str;
+            default = [ ];
+            description = "Template names for the skills section.";
+          };
+        };
+      }
+    );
+    default = null;
+    description = "Skills section configuration.";
+  };
+
+  mkListSectionJson =
+    section:
+    if section == null then
+      null
+    else
+      {
+        title = section.title;
+        entries = section.entries;
+      }
+      // optionalAttrs (section.entryVSpace != null) {
+        entryVSpace = section.entryVSpace;
+      }
+      // optionalAttrs (section.sectionVSpace != null) {
+        sectionVSpace = section.sectionVSpace;
+      };
+
+  mkSkillsSectionJson =
+    section:
+    if section == null then
+      null
+    else
+      {
+        title = section.title;
+        entries = section.entries;
+      };
+
   mkResumeJson =
     cfg:
     builtins.toJSON [
@@ -24,19 +104,11 @@ let
           github = cfg.identity.github;
           website = cfg.identity.website;
         };
-        sections = map (
-          s:
-          {
-            title = s.title;
-            entries = s.entries;
-          }
-          // optionalAttrs (s.entryVSpace != null) {
-            entryVSpace = s.entryVSpace;
-          }
-          // optionalAttrs (s.sectionVSpace != null) {
-            sectionVSpace = s.sectionVSpace;
-          }
-        ) cfg.sections;
+        education = mkListSectionJson cfg.education;
+        experience = mkListSectionJson cfg.experience;
+        projects = mkListSectionJson cfg.projects;
+        awards = mkListSectionJson cfg.awards;
+        skills = mkSkillsSectionJson cfg.skills;
       }
     ];
 
@@ -79,6 +151,7 @@ let
         mkdir -p build
         cp -r ${./tmpl} build/tmpl
         cp ${./tex/preamble.tex} build/preamble.tex
+        cp ${./tex/commands.tex} build/commands.tex
         cp ${resumeJson} build/resume.json
 
         ${resumegen}/bin/resume \
@@ -88,6 +161,7 @@ let
           -out build/out
 
         cp build/preamble.tex build/out/preamble.tex
+        cp build/commands.tex build/out/commands.tex
 
         (
           cd build/out
@@ -156,35 +230,11 @@ let
           };
         };
 
-        sections = mkOption {
-          type = types.listOf (
-            types.submodule {
-              options = {
-                title = mkOption {
-                  type = types.str;
-                  description = "Section title.";
-                };
-                entries = mkOption {
-                  type = types.listOf types.str;
-                  default = [ ];
-                  description = "Template names for this section.";
-                };
-                entryVSpace = mkOption {
-                  type = types.nullOr types.int;
-                  default = null;
-                  description = "Optional spacing in pt inserted after each entry, e.g. -4.";
-                };
-                sectionVSpace = mkOption {
-                  type = types.nullOr types.int;
-                  default = null;
-                  description = "Optional spacing in pt inserted after the section, e.g. -8.";
-                };
-              };
-            }
-          );
-          default = [ ];
-          description = "Ordered section list for the rendered resume.";
-        };
+        education = mkListSectionOption "Education" "Education";
+        experience = mkListSectionOption "Experience" "Experience";
+        projects = mkListSectionOption "Projects" "Projects";
+        awards = mkListSectionOption "Awards" "Awards";
+        skills = mkSkillsSectionOption;
 
         generatedJson = mkOption {
           type = types.nullOr types.str;

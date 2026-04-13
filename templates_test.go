@@ -52,7 +52,7 @@ func TestParseLatexTemplates_NoTemplates(t *testing.T) {
 
 func TestRenderResume(t *testing.T) {
 	dir := t.TempDir()
-	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "Name={{ .Identity.Name }} Sections={{ len .Sections }}")
+	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "Name={{ .Identity.Name }} Education={{ if .Education }}yes{{ else }}no{{ end }}")
 
 	tmpl, err := parseLatexTemplates(dir)
 	if err != nil {
@@ -61,18 +61,16 @@ func TestRenderResume(t *testing.T) {
 
 	rendered, err := renderResume(tmpl, "main.tex.tmpl", Resume{
 		Identity: Identity{Name: "Ujaan Das"},
-		Sections: []Section{
-			{
-				Title:   "Education",
-				Entries: []string{"edu_warwick", "edu_hkust"},
-			},
+		Education: &EducationSection{
+			Title:   "Education",
+			Entries: []string{"edu_warwick"},
 		},
 	})
 	if err != nil {
 		t.Fatalf("renderResume() error = %v", err)
 	}
 
-	if rendered != "Name=Ujaan Das Sections=1" {
+	if rendered != "Name=Ujaan Das Education=yes" {
 		t.Fatalf("unexpected render output: %q", rendered)
 	}
 }
@@ -81,6 +79,7 @@ func TestValidateResume_Valid(t *testing.T) {
 	dir := t.TempDir()
 	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "test")
 	mustWriteFile(t, filepath.Join(dir, "edu_warwick.tex.tmpl"), `{{ define "edu_warwick" }}education{{ end }}`)
+	mustWriteFile(t, filepath.Join(dir, "skills_default.tex.tmpl"), `{{ define "skills_default" }}skills{{ end }}`)
 
 	tmpl, err := parseLatexTemplates(dir)
 	if err != nil {
@@ -89,11 +88,13 @@ func TestValidateResume_Valid(t *testing.T) {
 
 	err = validateResume(tmpl, "main.tex.tmpl", Resume{
 		Identity: Identity{Name: "Test"},
-		Sections: []Section{
-			{
-				Title:   "Education",
-				Entries: []string{"edu_warwick.tex.tmpl"},
-			},
+		Education: &EducationSection{
+			Title:   "Education",
+			Entries: []string{"edu_warwick"},
+		},
+		Skills: &SkillsSection{
+			Title:   "Skills",
+			Entries: []string{"skills_default"},
 		},
 	})
 	if err != nil {
@@ -126,11 +127,9 @@ func TestValidateResume_MissingEntry(t *testing.T) {
 	}
 
 	err = validateResume(tmpl, "main.tex.tmpl", Resume{
-		Sections: []Section{
-			{
-				Title:   "Education",
-				Entries: []string{"missing_edu"},
-			},
+		Education: &EducationSection{
+			Title:   "Education",
+			Entries: []string{"missing_edu"},
 		},
 	})
 	if err == nil {
@@ -143,6 +142,7 @@ func TestProcessEntries(t *testing.T) {
 	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "main")
 	mustWriteFile(t, filepath.Join(dir, "edu_test.tex.tmpl"), `{{ define "edu_test" }}CONTENT_EDU{{ end }}`)
 	mustWriteFile(t, filepath.Join(dir, "work_test.tex.tmpl"), `{{ define "work_test" }}CONTENT_WORK{{ end }}`)
+	mustWriteFile(t, filepath.Join(dir, "skills_test.tex.tmpl"), `{{ define "skills_test" }}CONTENT_SKILLS{{ end }}`)
 
 	tmpl, err := parseLatexTemplates(dir)
 	if err != nil {
@@ -151,11 +151,13 @@ func TestProcessEntries(t *testing.T) {
 
 	input := Resume{
 		Identity: Identity{Name: "Test User"},
-		Sections: []Section{
-			{
-				Title:   "Education",
-				Entries: []string{"edu_test", "work_test"},
-			},
+		Education: &EducationSection{
+			Title:   "Education",
+			Entries: []string{"edu_test", "work_test"},
+		},
+		Skills: &SkillsSection{
+			Title:   "Skills",
+			Entries: []string{"skills_test"},
 		},
 	}
 
@@ -164,24 +166,27 @@ func TestProcessEntries(t *testing.T) {
 		t.Fatalf("processEntries() error = %v", err)
 	}
 
-	if len(processed.Sections) != 1 {
-		t.Fatalf("expected 1 section, got %d", len(processed.Sections))
+	if processed.Education == nil {
+		t.Fatal("expected education section to be preserved")
 	}
-
-	if len(processed.Sections[0].Entries) != 2 {
-		t.Fatalf("expected 2 entries, got %d", len(processed.Sections[0].Entries))
+	if len(processed.Education.Entries) != 2 {
+		t.Fatalf("expected 2 education entries, got %d", len(processed.Education.Entries))
 	}
-
-	if processed.Sections[0].Entries[0] != "CONTENT_EDU" {
-		t.Fatalf("expected CONTENT_EDU, got %q", processed.Sections[0].Entries[0])
+	if processed.Education.Entries[0] != "CONTENT_EDU" {
+		t.Fatalf("expected CONTENT_EDU, got %q", processed.Education.Entries[0])
 	}
-
-	if processed.Sections[0].Entries[1] != "CONTENT_WORK" {
-		t.Fatalf("expected CONTENT_WORK, got %q", processed.Sections[0].Entries[1])
+	if processed.Education.Entries[1] != "CONTENT_WORK" {
+		t.Fatalf("expected CONTENT_WORK, got %q", processed.Education.Entries[1])
+	}
+	if processed.Skills == nil {
+		t.Fatal("expected skills section to be preserved")
+	}
+	if len(processed.Skills.Entries) != 1 || processed.Skills.Entries[0] != "CONTENT_SKILLS" {
+		t.Fatalf("expected CONTENT_SKILLS, got %#v", processed.Skills.Entries)
 	}
 }
 
-func TestProcessEntries_FormatsNumericVSpace(t *testing.T) {
+func TestProcessEntries_FormatsNumericSpacingData(t *testing.T) {
 	dir := t.TempDir()
 	mustWriteFile(t, filepath.Join(dir, "main.tex.tmpl"), "main")
 	mustWriteFile(t, filepath.Join(dir, "edu_test.tex.tmpl"), `{{ define "edu_test" }}CONTENT_EDU{{ end }}`)
@@ -195,24 +200,25 @@ func TestProcessEntries_FormatsNumericVSpace(t *testing.T) {
 	sectionSpace := -7
 
 	processed, err := processEntries(tmpl, Resume{
-		Sections: []Section{
-			{
-				Title:         "Education",
-				Entries:       []string{"edu_test"},
-				EntryVSpace:   &entrySpace,
-				SectionVSpace: &sectionSpace,
-			},
+		Education: &EducationSection{
+			Title:         "Education",
+			Entries:       []string{"edu_test"},
+			EntryVSpace:   &entrySpace,
+			SectionVSpace: &sectionSpace,
 		},
 	})
 	if err != nil {
 		t.Fatalf("processEntries() error = %v", err)
 	}
 
-	if processed.Sections[0].EntryVSpaceTex != "\\vspace{-2pt}" {
-		t.Fatalf("expected entry spacing to be formatted, got %q", processed.Sections[0].EntryVSpaceTex)
+	if processed.Education == nil {
+		t.Fatal("expected education section to be preserved")
 	}
-	if processed.Sections[0].SectionVSpaceTex != "\\vspace{-7pt}" {
-		t.Fatalf("expected section spacing to be formatted, got %q", processed.Sections[0].SectionVSpaceTex)
+	if processed.Education.EntryVSpace == nil || *processed.Education.EntryVSpace != -2 {
+		t.Fatalf("expected entry spacing to remain numeric, got %#v", processed.Education.EntryVSpace)
+	}
+	if processed.Education.SectionVSpace == nil || *processed.Education.SectionVSpace != -7 {
+		t.Fatalf("expected section spacing to remain numeric, got %#v", processed.Education.SectionVSpace)
 	}
 }
 

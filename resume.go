@@ -29,18 +29,30 @@ type ProjectTmplName string
 type SkillsetTmplName string
 type AwardTmplName string
 
-type Section struct {
-	Title            string
-	Entries          []string
-	EntryVSpace      *int
-	SectionVSpace    *int
-	EntryVSpaceTex   string
-	SectionVSpaceTex string
+type ListSection struct {
+	Title         string
+	Entries       []string
+	EntryVSpace   *int
+	SectionVSpace *int
+}
+
+type EducationSection = ListSection
+type ExperienceSection = ListSection
+type ProjectSection = ListSection
+type AwardSection = ListSection
+
+type SkillsSection struct {
+	Title   string
+	Entries []string
 }
 
 type Resume struct {
-	Identity Identity
-	Sections []Section
+	Identity   Identity
+	Education  *EducationSection
+	Experience *ExperienceSection
+	Projects   *ProjectSection
+	Awards     *AwardSection
+	Skills     *SkillsSection
 }
 
 func getResumeConfig(dir, cfgFilename string) ([]Resume, error) {

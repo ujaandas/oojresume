@@ -62,30 +62,68 @@ func renderResume(tmpl *template.Template, mainTmplName string, r Resume) (strin
 	return out.String(), nil
 }
 
-func formatVSpace(v *int, fallback int) string {
-	value := fallback
-	if v != nil {
-		value = *v
+func renderEntries(tmpl *template.Template, entries []string) ([]string, error) {
+	rendered := make([]string, 0, len(entries))
+
+	for _, entry := range entries {
+		var buf bytes.Buffer
+		if err := tmpl.ExecuteTemplate(&buf, entry, nil); err != nil {
+			return nil, fmt.Errorf("failed to render %q: %v", entry, err)
+		}
+		rendered = append(rendered, buf.String())
 	}
-	return fmt.Sprintf("\\vspace{%dpt}", value)
+
+	return rendered, nil
+}
+
+func processListSection(tmpl *template.Template, section *ListSection) (*ListSection, error) {
+	if section == nil {
+		return nil, nil
+	}
+
+	processed := *section
+	rendered, err := renderEntries(tmpl, section.Entries)
+	if err != nil {
+		return nil, err
+	}
+	processed.Entries = rendered
+
+	return &processed, nil
+}
+
+func processSkillsSection(tmpl *template.Template, section *SkillsSection) (*SkillsSection, error) {
+	if section == nil {
+		return nil, nil
+	}
+
+	processed := *section
+	rendered, err := renderEntries(tmpl, section.Entries)
+	if err != nil {
+		return nil, err
+	}
+	processed.Entries = rendered
+
+	return &processed, nil
 }
 
 func processEntries(tmpl *template.Template, r Resume) (Resume, error) {
 	processed := r
 
-	for i := range processed.Sections {
-		processed.Sections[i].EntryVSpaceTex = formatVSpace(processed.Sections[i].EntryVSpace, -5)
-		processed.Sections[i].SectionVSpaceTex = formatVSpace(processed.Sections[i].SectionVSpace, -10)
-
-		var rendered []string
-		for _, entry := range processed.Sections[i].Entries {
-			var buf bytes.Buffer
-			if err := tmpl.ExecuteTemplate(&buf, entry, nil); err != nil {
-				return Resume{}, fmt.Errorf("failed to render %q: %v", entry, err)
-			}
-			rendered = append(rendered, buf.String())
-		}
-		processed.Sections[i].Entries = rendered
+	var err error
+	if processed.Education, err = processListSection(tmpl, processed.Education); err != nil {
+		return Resume{}, fmt.Errorf("failed to render education section: %v", err)
+	}
+	if processed.Experience, err = processListSection(tmpl, processed.Experience); err != nil {
+		return Resume{}, fmt.Errorf("failed to render experience section: %v", err)
+	}
+	if processed.Projects, err = processListSection(tmpl, processed.Projects); err != nil {
+		return Resume{}, fmt.Errorf("failed to render projects section: %v", err)
+	}
+	if processed.Awards, err = processListSection(tmpl, processed.Awards); err != nil {
+		return Resume{}, fmt.Errorf("failed to render awards section: %v", err)
+	}
+	if processed.Skills, err = processSkillsSection(tmpl, processed.Skills); err != nil {
+		return Resume{}, fmt.Errorf("failed to render skills section: %v", err)
 	}
 
 	return processed, nil
@@ -102,12 +140,28 @@ func validateResume(tmpl *template.Template, mainTmplName string, r Resume) erro
 		tmplNames[t.Name()] = true
 	}
 
-	for _, section := range r.Sections {
-		for _, entry := range section.Entries {
+	collectMissing := func(entries []string) {
+		for _, entry := range entries {
 			if !tmplNames[entry] {
 				missing = append(missing, entry)
 			}
 		}
+	}
+
+	if r.Education != nil {
+		collectMissing(r.Education.Entries)
+	}
+	if r.Experience != nil {
+		collectMissing(r.Experience.Entries)
+	}
+	if r.Projects != nil {
+		collectMissing(r.Projects.Entries)
+	}
+	if r.Awards != nil {
+		collectMissing(r.Awards.Entries)
+	}
+	if r.Skills != nil {
+		collectMissing(r.Skills.Entries)
 	}
 
 	if len(missing) > 0 {

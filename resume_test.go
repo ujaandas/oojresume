@@ -24,7 +24,7 @@ func writeTempFile(t *testing.T, content string) (string, string) {
 func TestGetResumeConfigSingle(t *testing.T) {
 	json := `[
 		{
-			"Identity": {
+			"identity": {
 				"Name": "John Doe",
 				"Email": "john@example.com",
 				"Phone": "123456",
@@ -32,11 +32,23 @@ func TestGetResumeConfigSingle(t *testing.T) {
 				"Github": "github.com/john",
 				"Website": "john.dev"
 			},
-			"Education": ["bsc_cs"],
-			"Experience": ["backend_dev"],
-			"Project": ["proj1"],
-			"Skills": "golang",
-			"Awards": ["award1"]
+			"education": {
+				"title": "Education",
+				"entries": ["bsc_cs"]
+			},
+			"experience": {
+				"title": "Experience",
+				"entries": ["backend_dev"]
+			},
+			"projects": {
+				"title": "Projects",
+				"entries": ["proj1"]
+			},
+			"skills": {
+				"title": "Skills",
+				"entries": ["golang"]
+			},
+			"awards": null
 		}
 	]`
 
@@ -54,25 +66,28 @@ func TestGetResumeConfigSingle(t *testing.T) {
 	if cfgs[0].Identity.Name != "John Doe" {
 		t.Errorf("expected Name 'John Doe', got %s", cfgs[0].Identity.Name)
 	}
+	if cfgs[0].Education == nil {
+		t.Fatal("expected education section to be decoded")
+	}
 }
 
 func TestGetResumeConfigMultiple(t *testing.T) {
 	json := `[
 		{
-			"Identity": { "Name": "A" },
-			"Education": [],
-			"Experience": [],
-			"Project": [],
-			"Skills": "x",
-			"Awards": []
+			"identity": { "Name": "A" },
+			"education": null,
+			"experience": null,
+			"projects": null,
+			"skills": { "title": "Skills", "entries": ["x"] },
+			"awards": null
 		},
 		{
-			"Identity": { "Name": "B" },
-			"Education": [],
-			"Experience": [],
-			"Project": [],
-			"Skills": "y",
-			"Awards": []
+			"identity": { "Name": "B" },
+			"education": null,
+			"experience": null,
+			"projects": null,
+			"skills": { "title": "Skills", "entries": ["y"] },
+			"awards": null
 		}
 	]`
 
