@@ -1,25 +1,86 @@
+\documentclass[a4paper,11pt]{article}
+
 \input{preamble}
 \input{commands}
 \begin{document}
 
 %----------HEADING----------
 \begin{center}
-    \textbf{\Huge \scshape {{ .Identity.Name }}}} \\ \vspace{1pt}
-    \small {{ .Identity.Phone }} $|$ \href{mailto:{{ .Identity.Email }}}{\underline{{{ .Identity.Email }}}} $|$ 
-    \href{https://{{ .Identity.LinkedIn }}}{\underline{{{ .Identity.LinkedIn }}}} $|$
-    \href{https://{{ .Identity.Github }}}{\underline{{{ .Identity.Github }}}}
+    \textbf{\Huge \scshape {{ .Identity.Name }} } \\ \vspace{1pt}
+    \small {{ .Identity.Phone }} $|$ \href{mailto:{{ .Identity.Email }} }{\underline{ {{ .Identity.Email }} }} $|$ 
+    \href{https://{{ .Identity.LinkedIn }} }{\underline{ {{ .Identity.LinkedIn }} }} $|$
+    \href{https://{{ .Identity.Github }} }{\underline{ {{ .Identity.Github }} }}
 \end{center}
 
-{{ range .Sections }}
+{{ with .Education }}
     {{ $section := . }}
     \section{ {{ .Title }} }
     \resumeSubHeadingListStart
     {{ range .Entries }}
         {{ . }}
-        % {{ $section.EntryVSpaceTex }}
+        {{ with $section.EntryVSpace }}
+        % \vspace{ {{ . }}pt }
+        {{ end }}
     {{ end }}
-    % {{ .SectionVSpaceTex }}
+    {{ with $section.SectionVSpace }}
+    % \vspace{ {{ . }}pt }
+    {{ end }}
     \resumeSubHeadingListEnd
+{{ end }}
+
+{{ with .Experience }}
+    {{ $section := . }}
+    \section{ {{ .Title }} }
+    \resumeSubHeadingListStart
+    {{ range .Entries }}
+        {{ . }}
+        {{ with $section.EntryVSpace }}
+        % \vspace{ {{ . }}pt }
+        {{ end }}
+    {{ end }}
+    {{ with $section.SectionVSpace }}
+    % \vspace{ {{ . }}pt }
+    {{ end }}
+    \resumeSubHeadingListEnd
+{{ end }}
+
+{{ with .Projects }}
+    {{ $section := . }}
+    \section{ {{ .Title }} }
+    \resumeSubHeadingListStart
+    {{ range .Entries }}
+        {{ . }}
+        {{ with $section.EntryVSpace }}
+        % \vspace{ {{ . }}pt }
+        {{ end }}
+    {{ end }}
+    {{ with $section.SectionVSpace }}
+    % \vspace{ {{ . }}pt }
+    {{ end }}
+    \resumeSubHeadingListEnd
+{{ end }}
+
+% {{ with .Awards }}
+%     {{ $section := . }}
+%     \section{ {{ .Title }} }
+%     \resumeSubHeadingListStart
+%     {{ range .Entries }}
+%         {{ . }}
+%         {{ with $section.EntryVSpace }}
+%         % \vspace{ {{ . }}pt }
+%         {{ end }}
+%     {{ end }}
+%     {{ with $section.SectionVSpace }}
+%     % \vspace{ {{ . }}pt }
+%     {{ end }}
+%     \resumeSubHeadingListEnd
+% {{ end }}
+
+{{ with .Skills }}
+    \section{ {{ .Title }} }
+    {{ range .Entries }}
+        {{ . }}
+    {{ end }}
 {{ end }}
 
 \end{document}

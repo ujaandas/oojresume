@@ -1,9 +1,8 @@
 {{ define "proj_snip" }}
-\textbf{Snip} | \textit{C++, Termios, Gtest, CMake, Nix}
-\hfill \href{https://github.com/ujaandas/snip}{Github} \\
-\vspace{-9pt}
-\begin{itemize}
-    \item Architected an async C++ TUI framework and Vim-style modal editor, engineering a thread-safe, non-blocking event-consumer pipeline with background worker pools for deferred command execution
-    \item Integrated native LSP tooling for real-time diagnostics and configured hermetic, reproducible per-project environments configurable via Nix, ensuring system-agnostic cross-platform build consistency
-\end{itemize}
+\resumeProjectHeading
+  {\textbf{Snip} $|$ \emph{C++, Termios, Gtest, CMake, Nix}}{\href{https://github.com/ujaandas/snip}{GitHub}}
+  \resumeItemListStart
+    \resumeItem{Architected an async C++ TUI framework and Vim-style modal editor with a thread-safe, non-blocking event pipeline and background worker pools for deferred execution}
+    \resumeItem{Integrated native LSP tooling for real-time diagnostics and built hermetic, reproducible environments via Nix for cross-platform consistency}
+  \resumeItemListEnd
 {{ end }}

@@ -1,9 +1,10 @@
 {{ define "work_stellerus_swe_2025" }}
-\textbf{Software Engineer,} {\small Stellerus Technology} -- Hong Kong SAR \hfill Jan 2025 - Aug 2025 \\
-\vspace{-9pt}
-\begin{itemize}
-    \item Engineered a Pydantic-based DSL and LangGraph execution pipeline to compile unstructured LLM outputs into deterministic tool calls, powering a multi-agent chatbot for complex geospatial operations
-    \item Refactored the execution pipeline with a strict schema validation framework, standardizing message payloads to eliminate redundant parsing and cut runtime errors by 30\%
-    \item Engineered asynchronous API connectors to bridge the LangGraph agent with the core geospatial backend, optimizing connection pooling and reducing tool execution latency by 120ms
-\end{itemize}
+\resumeSubheading
+  {Software Engineer}{Jan 2025 -- Aug 2025}
+  {Stellerus Technology}{Hong Kong SAR}
+  \resumeItemListStart
+    \resumeItem{Engineered a Pydantic-based DSL and LangGraph execution pipeline to compile unstructured LLM outputs into deterministic tool calls, powering a multi-agent chatbot for complex geospatial operations}
+    \resumeItem{Refactored the execution pipeline with strict schema validation, standardizing message payloads to eliminate redundant parsing and reduce runtime errors by 30\%}
+    \resumeItem{Developed asynchronous API connectors bridging the LangGraph agent with the core geospatial backend, optimizing connection pooling and reducing tool execution latency by 120ms}
+  \resumeItemListEnd
 {{ end }}

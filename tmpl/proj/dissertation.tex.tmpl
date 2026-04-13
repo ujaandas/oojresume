@@ -1,9 +1,8 @@
 {{ define "proj_dissertation" }}
-\textbf{MSc Dissertation - Invariants} | \textit{C++, Gtest, CMake, Python, Pybind11, Nix}
-\hfill \href{https://github.com/ujaandas/dissertation/}{Github} \\
-\vspace{-9pt}
-\begin{itemize}
-    \item Engineered a specification DSL using semantic invariants and refinement types, guiding large language model decoding by encoding complex constraints into verifiable runtime rules
-    \item Architected the core C++ compilation runtime with Python bindings for seamless integration into LLM inference pipelines, enforcing strict generation-time schema compliance with 30ms overhead
-\end{itemize}
+\resumeProjectHeading
+  {\textbf{MSc Dissertation - Invariants} $|$ \emph{C++, Gtest, CMake, Python, Pybind11, Nix}}{\href{https://github.com/ujaandas/dissertation/}{GitHub}}
+  \resumeItemListStart
+    \resumeItem{Engineered a specification DSL using semantic invariants and refinement types to guide LLM decoding via verifiable runtime constraints}
+    \resumeItem{Architected a C++ compilation runtime with Python bindings for seamless integration into inference pipelines, enforcing schema compliance with 30ms overhead}
+  \resumeItemListEnd
 {{ end }}
