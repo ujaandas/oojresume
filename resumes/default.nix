@@ -30,8 +30,8 @@
       title = "Projects";
       entries = [
         "proj_dissertation"
-        "proj_yumcha"
         "proj_snip"
+        "proj_yumcha"
         "proj_follow_me_robot"
       ];
     }
