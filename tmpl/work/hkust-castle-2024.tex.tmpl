@@ -2,8 +2,8 @@
 \textbf{Software Engineering Intern,} {\small CASTLE Lab, HKUST} -- Hong Kong SAR \hfill May 2024 -- Sept 2024 \\
 \vspace{-9pt}
 \begin{itemize}
-    \item Tasked with extracting semantic signals (assertions, control-flow, context) from noisy, multi-million-line Java codebases (30,000+ repositories) to support research on automated correctness checking
-    \item Engineered static-analysis pipelines that lowered code into ASTs, control-flow graphs, and lightweight IRs, and built high-throughput AST/data-flow tooling in Python to process large repository batches
-    \item Increased usable assertion/context coverage by 3.2$\times$, reduced per-project analysis time by \textasciitilde45\%, and enabled lab to run new large-scale experiments in automated assertion generation and program-understanding models
+    \item Engineered Python and Java static-analysis pipelines to extract semantic signals from 30k+ scraped Github repositories to inform research in LLM-assisted testcase generation
+    \item Parsed multi-million-line codebases into ASTs and CFGs via Tree-sitter, javalang and Spoon, emitting lightweight IRs to profile assertion quality and generate statistics
+    \item Increased usable assertion coverage by 3.2x and reduced per-project analysis time by 45\%, unlocking large-scale automated assertion generation experiments, slated for publication in ACM ICSE'27
 \end{itemize}
 {{ end }}
