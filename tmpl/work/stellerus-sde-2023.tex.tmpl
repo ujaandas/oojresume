@@ -1,9 +1,9 @@
-{{ define "work_stellerus_sde_2023" }}
-\textbf{Software Development Intern,} {\small Stellerus Technology} -- Hong Kong SAR \hfill May 2023 -- Aug 2023 \\
+{{ define "work_stellerus_swe_2023" }}
+\textbf{Software Engineering Intern,} {\small Stellerus Technology} -- Hong Kong SAR \hfill May 2023 -- Aug 2023 \\
 \vspace{-9pt}
 \begin{itemize}
-    \item Built a high-performance geospatial serving system responsible for handling large tile workloads under tight latency and throughput constraints
-    \item Designed a GDAL processing pipeline, optimized MongoDB metadata access paths through indexing and schema redesign, and introduced a Celery/Redis worker pool to parallelize CPU-heavy geospatial operations
-    \item Delivered sustained 8,000+ tile requests/sec with sub-150ms latency, cut metadata query time by \textasciitilde55\%, and reduced queue wait times by \textasciitilde60\%, significantly improving backend throughput under peak load
+    \item Architected a FastAPI and MongoDB backend to orchestrate multi-user task queues connected to our live satellites, rendering and delivering geospatial tiles at 8,000+ requests/sec with <150ms latency
+    \item Parallelized CPU-bound GDAL operations via a Celery/Redis worker pool, cutting processing time by 34\%
+    \item Dockerized services and built CI/CD pipelines for Azure Container Apps, cutting deployment time by 20\%
 \end{itemize}
 {{ end }}
