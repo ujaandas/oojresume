@@ -22,8 +22,9 @@
     title = "Experience";
     entries = [
       "work_stellerus_swe_2025"
-      "work_hkust_castle_2024"
+      # "work_hkust_castle_2024"
       "work_stellerus_swe_2023"
+      "work_hci_init_2022"
     ];
   };
 
@@ -41,6 +42,6 @@
 
   skills = {
     title = "Skills";
-    entries = [ "skills_default" ];
+    entries = [ "skills_webby" ];
   };
 }
