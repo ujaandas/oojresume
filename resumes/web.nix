@@ -1,6 +1,6 @@
 {
   enable = true;
-  name = "default";
+  name = "UjaanDasResumeWeb";
 
   identity = {
     name = "Ujaan Das";
