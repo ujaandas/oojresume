@@ -1,6 +1,6 @@
 {
   enable = true;
-  name = "UjaanDasResumeBackendHS";
+  name = "UjaanDasCV";
 
   identity = {
     name = "Ujaan Das";
