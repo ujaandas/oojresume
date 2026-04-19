@@ -15,8 +15,8 @@
     entries = [
       "edu_warwick"
       "edu_hkust"
-      "edu_hs2"
-      "edu_hs1"
+      "edu_nu"
+      "edu_hs"
     ];
   };
 
@@ -26,6 +26,7 @@
       "work_stellerus_swe_2025"
       "work_hkust_castle_2024"
       "work_stellerus_swe_2023"
+      "work_hci_init_2022"
     ];
   };
 
@@ -36,6 +37,8 @@
       "proj_snip"
       "proj_yumcha"
       "proj_follow_me_robot"
+      "proj_oojsite"
+      "proj_terraviz"
     ];
   };
 
@@ -43,6 +46,6 @@
 
   skills = {
     title = "Skills";
-    entries = [ "skills_default" ];
+    entries = [ "skills_all" ];
   };
 }
