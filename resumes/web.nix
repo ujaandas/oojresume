@@ -33,15 +33,18 @@
     entries = [
       "proj_dissertation"
       "proj_snip"
-      "proj_oojsite"
       "proj_terraviz"
+      "proj_oojsite"
     ];
   };
-
-  awards = null;
 
   skills = {
     title = "Skills";
     entries = [ "skills_webby" ];
+  };
+
+  awards = {
+    title = "Awards";
+    entries = [ "awards" ];
   };
 }

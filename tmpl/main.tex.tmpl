@@ -60,27 +60,21 @@
     \resumeSubHeadingListEnd
 {{ end }}
 
-% {{ with .Awards }}
-%     {{ $section := . }}
-%     \section{ {{ .Title }} }
-%     \resumeSubHeadingListStart
-%     {{ range .Entries }}
-%         {{ . }}
-%         {{ with $section.EntryVSpace }}
-%         % \vspace{ {{ . }}pt }
-%         {{ end }}
-%     {{ end }}
-%     {{ with $section.SectionVSpace }}
-%     % \vspace{ {{ . }}pt }
-%     {{ end }}
-%     \resumeSubHeadingListEnd
-% {{ end }}
-
 {{ with .Skills }}
     \section{ {{ .Title }} }
     {{ range .Entries }}
         {{ . }}
     {{ end }}
+{{ end }}
+
+{{ with .Awards }}
+    {{ $section := . }}
+    \section{ {{ .Title }} }
+    \resumeSubHeadingListStart
+    {{ range .Entries }}
+        \item \small { {{ . }} }
+    {{ end }}
+    \resumeSubHeadingListEnd
 {{ end }}
 
 \end{document}
