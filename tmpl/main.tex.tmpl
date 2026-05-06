@@ -72,7 +72,13 @@
     \section{ {{ .Title }} }
     \resumeSubHeadingListStart
     {{ range .Entries }}
-        \item \small { {{ . }} }
+        {{ . }}
+        {{ with $section.EntryVSpace }}
+        % \vspace{ {{ . }}pt }
+        {{ end }}
+    {{ end }}
+    {{ with $section.SectionVSpace }}
+    % \vspace{ {{ . }}pt }
     {{ end }}
     \resumeSubHeadingListEnd
 {{ end }}
