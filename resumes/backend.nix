@@ -24,6 +24,7 @@
       "work_stellerus_swe_2025"
       "work_hkust_castle_2024"
       "work_stellerus_swe_2023"
+      "work_hci_init_2022"
     ];
   };
 
@@ -32,15 +33,18 @@
     entries = [
       "proj_dissertation"
       "proj_snip"
-      "proj_yumcha"
-      "proj_follow_me_robot"
+      # "proj_yumcha"
+      # "proj_follow_me_robot"
     ];
   };
 
-  awards = null;
-
   skills = {
     title = "Skills";
-    entries = [ "skills_default" ];
+    entries = [ "skills_backend" ];
+  };
+
+  awards = {
+    title = "Awards";
+    entries = [ "awards" ];
   };
 }
